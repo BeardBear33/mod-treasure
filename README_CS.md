@@ -1,6 +1,6 @@
 # mod-treasure  
 
-### 🇬🇧 [English version](README.en.md)
+### 🇬🇧 [English version](README_EN.md)
 
 ## Popis (CZ)  
 Tento modul umožňuje:  
@@ -82,4 +82,5 @@ Příklad (pevný počet): .treasure additem 18 3 100 epic
 Příklad: .treasure tp 7
 
 ## License
+
 This module is licensed under the [GNU General Public License v2.0 (GPL-2.0)](LICENSE).
