@@ -1,0 +1,57 @@
+# ==========================================
+# mod_treasure
+# Správa vlastních truhel (BASIC/RARE/EPIC)
+# Manage custom treasure chests (BASIC/RARE/EPIC)
+# ==========================================
+
+# Zapnout modul (1/0)
+Treasure.Enable = 1
+
+# Jazyk názvů truhel v gameobject_template (cs/en)
+Treasure.Language = cs
+
+# Nastavení beden
+Treasure.Basic.DisplayId = 1387
+Treasure.Basic.Size = 0.7
+Treasure.DefaultItem.Basic = 11966
+Treasure.DefaultItem.Basic.Chance = 100
+Treasure.DefaultItem.Basic.MinCount = 1
+Treasure.DefaultItem.Basic.MaxCount = 1
+
+Treasure.Rare.DisplayId = 8686
+Treasure.Rare.Size = 1.0
+Treasure.DefaultItem.Rare = 11937
+Treasure.DefaultItem.Rare.Chance = 100
+Treasure.DefaultItem.Rare.MinCount = 1
+Treasure.DefaultItem.Rare.MaxCount = 1
+
+Treasure.Epic.DisplayId = 8630
+Treasure.Epic.Size = 1.0
+Treasure.DefaultItem.Epic = 40752
+Treasure.DefaultItem.Epic.Chance = 25
+Treasure.DefaultItem.Epic.MinCount = 1
+Treasure.DefaultItem.Epic.MaxCount = 1
+
+
+# ---- Respawn (cooldown) v sekundách ----
+# Po vybrání truhla zmizí a vrátí se po čase.
+#Basic = 1 den = 86400
+#Rare =  5 dní = 432000
+#Epic = 10 dní = 864000
+Treasure.Basic.RespawnSeconds = 86400
+Treasure.Rare.RespawnSeconds = 432000
+Treasure.Epic.RespawnSeconds = 864000
+
+# ---- Technické: data polí (CHEST) ----
+# lockId (Data0) – 43 osvědčené nastavení pro správné chování
+Treasure.LockId = 43
+
+# Následující flagy nech 1 podle tvých zjištění
+Treasure.CHEST.Data3 = 1
+Treasure.CHEST.Data10 = 1
+Treasure.CHEST.Data12 = 1
+Treasure.CHEST.Data15 = 1
+
+# Poznámka:
+# - Loot je sdílený per kvalita přes gameobject_loot_template.Entry
+# - Příkaz .treasure additem přidává položku do lootu dané kvality

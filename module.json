@@ -1,0 +1,22 @@
+{
+  "name": "mod-treasure",
+  "version": "1.0.0",
+  "author": "BeardBear",
+  "description": "Module that adds treasure chests (basic, rare, epic) with configurable respawn, language (CS/EN), and custom loot via in-game commands.",
+  "patches": [],
+  "sql": {
+    "world": [
+      "sql/world/base/treasure_chest.sql"
+    ],
+	"customs": [
+      "sql/customs/base/treasure_chest.sql"
+    ]
+  },
+  "commands": [
+    ".treasure add basic/rare/epic",
+    ".treasure list basic/rare/epic",
+    ".treasure remove <ID>",
+    ".treasure additem <itemId> <min-max/count> <chance> <basic/rare/epic>",
+    ".treasure tp <ID>"
+  ]
+}
