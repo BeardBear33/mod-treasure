@@ -1,6 +1,6 @@
 # mod-treasure  
 
-### 🇨🇿 [Česká verze / Czech version](README.cs.md)
+### 🇨🇿 [Česká verze](README_CS.md)
 
 ## Description (EN)
 - This module allows you to:
@@ -87,4 +87,5 @@ Example (fixed count): .treasure additem 18 3 100 epic
 Example: .treasure tp 7
 
 ## License
+
 This module is licensed under the [GNU General Public License v2.0 (GPL-2.0)](LICENSE).
