@@ -1,5 +1,9 @@
 # mod-treasure
 
+🌍 Vyber jazyk / Choose language:
+- [Čeština](./README_CS.md)
+- [English](./README_EN.md)
+
 > ⚠️ **Upozornění (CZ):**  
 > Před použitím tohoto modulu si **důkladně** přečti soubor [README_CS.md](./README_CS.md).  
 > Obsahuje zásadní informace o fungování a omezeních modulu.  
@@ -17,7 +21,3 @@
 [azerothcore-wotlk (Playerbot branch)](https://github.com/liyunfan1223/azerothcore-wotlk/tree/Playerbot)
 
 ----------------------------------------------------------------------------------------------------------------
-
-🌍 Vyber jazyk / Choose language:
-- [Čeština](./README_CS.md)
-- [English](./README_EN.md)
