@@ -18,31 +18,31 @@ Treasure.Language = cs
 #=================#
 
 #Basic Chest
-Treasure.Basic.DisplayId = 1387
-Treasure.Basic.Size = 0.7
+Treasure.Basic.DisplayId = 8686
+Treasure.Basic.Size = 0.5
 Treasure.Basic.RespawnSeconds = 86400
-Treasure.DefaultItem.Basic = 11966
-Treasure.DefaultItem.Basic.Chance = 100
+Treasure.DefaultItem.Basic = 37711
+Treasure.DefaultItem.Basic.Chance = 5
 Treasure.DefaultItem.Basic.MinCount = 1
 Treasure.DefaultItem.Basic.MaxCount = 1
 
 #Rare chest
-Treasure.Rare.DisplayId = 8686
-Treasure.Rare.Size = 1.0
+Treasure.Rare.DisplayId = 8630
+Treasure.Rare.Size = 0.5
 Treasure.Rare.RespawnSeconds = 432000
-Treasure.DefaultItem.Rare = 11937
-Treasure.DefaultItem.Rare.Chance = 100
-Treasure.DefaultItem.Rare.MinCount = 1
-Treasure.DefaultItem.Rare.MaxCount = 1
+Treasure.DefaultItem.Rare = 37711
+Treasure.DefaultItem.Rare.Chance = 15
+Treasure.DefaultItem.Rare.MinCount = 2
+Treasure.DefaultItem.Rare.MaxCount = 2
 
 #Epic chest
-Treasure.Epic.DisplayId = 8630
-Treasure.Epic.Size = 1.0
+Treasure.Epic.DisplayId = 8627
+Treasure.Epic.Size = 0.5
 Treasure.Epic.RespawnSeconds = 864000
-Treasure.DefaultItem.Epic = 40752
+Treasure.DefaultItem.Epic = 37711
 Treasure.DefaultItem.Epic.Chance = 25
-Treasure.DefaultItem.Epic.MinCount = 1
-Treasure.DefaultItem.Epic.MaxCount = 1
+Treasure.DefaultItem.Epic.MinCount = 3
+Treasure.DefaultItem.Epic.MaxCount = 3
 
 #=======================================================================================#
 # Technické: chest data     															#
