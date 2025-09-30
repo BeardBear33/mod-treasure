@@ -51,6 +51,11 @@ Pokud máš v databázi již jiné záznamy s těmito ID, je potřeba čísla v 
   **Small Sack of Coins (11966)** a **Fat Sack of Coins (11937)** tak, aby přestaly padat z klasických truhel  
   a byly exkluzivním obsahem truhel vytvořených tímto modulem.
 
+### ℹ️ Doporučení
+Pokud máš problém s respawnem truhel, doporučuje se použít doplňkový modul  
+**[mod_chest_persist (main branch) ](https://github.com/BeardBear33/mod_chest_persist)**  
+který správně sleduje a ukládá jejich respawn čas.  
+
 ### Příkazy
 .treasure add basic
 ➝ Vytvoří prostou truhlu (basic) v aktuálním místě hráče
@@ -82,5 +87,4 @@ Příklad (pevný počet): .treasure additem 18 3 100 epic
 Příklad: .treasure tp 7
 
 ## License
-
 This module is licensed under the [GNU General Public License v2.0 (GPL-2.0)](LICENSE).
