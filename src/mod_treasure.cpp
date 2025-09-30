@@ -833,6 +833,6 @@ public:
 void Addmod_treasureScripts()
 {
     new TreasureWorldScript();
-    new TreasureGO();
+    //new TreasureGO();
     new TreasureCommands();
 }
