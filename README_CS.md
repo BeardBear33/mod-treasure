@@ -52,9 +52,9 @@ Pokud máš v databázi již jiné záznamy s těmito ID, je potřeba čísla v 
   a byly exkluzivním obsahem truhel vytvořených tímto modulem.
 
 ### ℹ️ Doporučení
-Pokud máš problém s respawnem truhel, doporučuje se použít doplňkový modul  
-**[mod_chest_persist (main branch) ](https://github.com/BeardBear33/mod_chest_persist)**  
-který správně sleduje a ukládá jejich respawn čas.  
+Pokud máš problém s respawnem truhel, doporučuje se použít doplňkový modul
+**[mod_chest_persist (main branch) ](https://github.com/BeardBear33/mod_chest_persist)**
+který správně sleduje a ukládá jejich respawn čas.
 
 ### Příkazy
 .treasure add basic
