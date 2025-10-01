@@ -11,6 +11,7 @@
 #include "Log.h"
 #include "StringFormat.h"
 #include "Map.h"
+#include "GameTime.h"
 
 #include <algorithm>
 #include <cctype>
@@ -336,37 +337,45 @@ public:
 // GameObjectScript
 // ============================
 
-class TreasureGO : public GameObjectScript
+class TreasureChestPersistGO : public GameObjectScript
 {
 public:
-    TreasureGO() : GameObjectScript("TreasureGO") {}
+    TreasureChestPersistGO() : GameObjectScript("TreasureChestPersistGO") {}
 
     void OnLootStateChanged(GameObject* go, uint32 state, Unit* unit) override
-    {
-        if (!TreasureConf::enable)
-            return;
-
-        if (!go || state != GO_JUST_DEACTIVATED_STATE || go->GetGoType() != GO_TYPE_CHEST)
-            return;
-
-        if (!unit || unit->GetTypeId() != TYPEID_PLAYER)
-            return;
-
-        uint32 entry = go->GetEntry();
-        TreasureQuality q;
-
-        if (entry == TREASURE_ENTRY_BASIC_CS || entry == TREASURE_ENTRY_BASIC_EN)
-            q = TreasureQuality::BASIC;
-        else if (entry == TREASURE_ENTRY_RARE_CS || entry == TREASURE_ENTRY_RARE_EN)
-            q = TreasureQuality::RARE;
-        else if (entry == TREASURE_ENTRY_EPIC_CS || entry == TREASURE_ENTRY_EPIC_EN)
-            q = TreasureQuality::EPIC;
-        else
-            return;
-
-        // nic – loot (předměty) řeší DB přes gameobject_loot_template
-        return;
-    }
+	{
+		if (!TreasureConf::enable)
+			return;
+	
+		if (!go || state != GO_JUST_DEACTIVATED_STATE || go->GetGoType() != GO_TYPE_CHEST)
+			return;
+	
+		// jen ověříme, že je to jedna z našich truhel (CS/EN entry)
+		uint32 entry = go->GetEntry();
+		bool ours =
+			entry == TREASURE_ENTRY_BASIC_CS || entry == TREASURE_ENTRY_BASIC_EN ||
+			entry == TREASURE_ENTRY_RARE_CS  || entry == TREASURE_ENTRY_RARE_EN  ||
+			entry == TREASURE_ENTRY_EPIC_CS  || entry == TREASURE_ENTRY_EPIC_EN;
+	
+		if (!ours)
+			return;
+	
+		// === PERSISTENCE: ulož respawn přes engine API, aby držel i po restartu ===
+		uint32 const delay = go->GetRespawnDelay(); // vychází z gameobject.spawntimesecs (spawn/template)
+		if (delay == 0)
+			return;
+	
+		uint64 when = static_cast<uint64>(GameTime::GetGameTime().count()) + static_cast<uint64>(delay);
+		if (Map* map = go->GetMap())
+		{
+			time_t when_t = static_cast<time_t>(when);
+			map->SaveGORespawnTime(go->GetSpawnId(), when_t); // zapíše do gameobject_respawn (guid,mapId,instanceId)
+		}
+	
+		// (volitelný) tichý log – žádné placeholdery
+		// std::ostringstream msg; msg << "[TreasureGO] saved respawn guid=" << go->GetSpawnId() << " until=" << when;
+		// LOG_INFO("module", msg.str().c_str());
+	}
 };
 
 
@@ -833,6 +842,6 @@ public:
 void Addmod_treasureScripts()
 {
     new TreasureWorldScript();
-    //new TreasureGO();
+    new TreasureChestPersistGO();
     new TreasureCommands();
 }
