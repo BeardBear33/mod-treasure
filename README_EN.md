@@ -55,11 +55,6 @@ If your database already contains records with these IDs, adjust the numbers in 
   **Small Sack of Coins (11966)** and **Fat Sack of Coins (11937)** so that they no longer drop from regular coffers  
   and become exclusive to the treasure chests created by this module.
 
-### ℹ️ Doporučení
-If you experience issues with chest respawn, it is recommended to use the companion module
-**[mod_chest_persist (main branch) ](https://github.com/BeardBear33/mod_chest_persist)**
-which properly monitors and records their respawn time.
-
 ### Commands
 .treasure add basic
 ➝ Creates a plain chest (basic) at the player’s current location
@@ -92,3 +87,4 @@ Example: .treasure tp 7
 
 ## License
 This module is licensed under the [GNU General Public License v2.0 (GPL-2.0)](LICENSE).
+
