@@ -1,4 +1,4 @@
-# mod-treasure
+# Treasure
 
 🌍 Vyber jazyk / Choose language:
 - [Čeština](./README_CS.md)
