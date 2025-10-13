@@ -82,5 +82,6 @@ Příklad (pevný počet): .treasure additem 18 3 100 epic
 Příklad: .treasure tp 7
 
 ## License
-This module is licensed under the [GNU General Public License v2.0 (GPL-2.0)](LICENSE).
+This module is licensed under the [GNU General Public License v3.0 (GPL-3.0)](LICENSE).
+
 
