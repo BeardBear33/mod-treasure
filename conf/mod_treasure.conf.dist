@@ -17,7 +17,7 @@ Treasure.Language = cs
 # Chest settings  #
 #=================#
 
-#Basic Chest
+# Basic Chest
 Treasure.Basic.DisplayId = 8686
 Treasure.Basic.Size = 0.5
 Treasure.Basic.RespawnSeconds = 86400
@@ -26,7 +26,7 @@ Treasure.DefaultItem.Basic.Chance = 5
 Treasure.DefaultItem.Basic.MinCount = 1
 Treasure.DefaultItem.Basic.MaxCount = 1
 
-#Rare chest
+# Rare chest
 Treasure.Rare.DisplayId = 8630
 Treasure.Rare.Size = 0.5
 Treasure.Rare.RespawnSeconds = 432000
@@ -35,7 +35,7 @@ Treasure.DefaultItem.Rare.Chance = 15
 Treasure.DefaultItem.Rare.MinCount = 2
 Treasure.DefaultItem.Rare.MaxCount = 2
 
-#Epic chest
+# Epic chest
 Treasure.Epic.DisplayId = 8627
 Treasure.Epic.Size = 0.5
 Treasure.Epic.RespawnSeconds = 864000
@@ -43,6 +43,30 @@ Treasure.DefaultItem.Epic = 37711
 Treasure.DefaultItem.Epic.Chance = 25
 Treasure.DefaultItem.Epic.MinCount = 3
 Treasure.DefaultItem.Epic.MaxCount = 3
+
+# Zpráva do chatu, když se hráč přiblíží k bedně.
+# Chat message displayed when a player approaches a chest.
+Treasure.Notify.Enable = 1
+
+# Pozor: Pokud používáš modul playerbots, doporučuji nastavit Account ID pro randomboty.
+# Warning: If you are using the playerbots module, it is recommended to set the Account ID for randombots.
+Treasure.Notify.RndBots.Disable = "1-202"
+
+# Vzdálenost, při které se zobrazí zpráva o bedně v blízkosti.
+# Distance at which the message about a nearby chest is displayed.
+Treasure.Notify.Radius.basic = 120
+Treasure.Notify.Radius.rare = 120
+Treasure.Notify.Radius.epic = 120
+
+# Text zprávy, která se zobrazí při přiblížení k bedně.
+# Text of the message displayed when approaching a chest.
+Treasure.Notify.Msg.Basic.cs = |cffffffffCítíš slabou přítomnost něčeho ukrytého poblíž...|r
+Treasure.Notify.Msg.Rare.cs  = |cff00BFFFZ okolí vyzařuje energie něčeho vzácného...|r
+Treasure.Notify.Msg.Epic.cs  = |cffC878FFVzduch kolem tebe jiskří — cítíš mocnou auru blízkého pokladu!|r
+
+Treasure.Notify.Msg.Basic.en = |cffE6CC80You sense a faint presence of something hidden nearby...|r
+Treasure.Notify.Msg.Rare.en  = |cff00BFFFA subtle energy of something rare radiates from the surroundings...|r
+Treasure.Notify.Msg.Epic.en  = |cffC878FFThe air crackles — you feel a powerful aura of a treasure close by!|r
 
 #=======================================================================================#
 # Technické: chest data     															#
