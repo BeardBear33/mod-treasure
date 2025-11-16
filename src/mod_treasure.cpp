@@ -19,35 +19,23 @@
 #include <sstream>
 #include <cmath>
 #include <ctime>
-#include <unordered_map> // +++ kvůli per-player state +++
+#include <unordered_map>
 
 /* ============================
  * Settings / IDs (constants)
  * ============================ */
 
-// Sdílené template/loot entry per kvalita (držíme je v bezpečném custom rozsahu)
-// CS entries
 static constexpr uint32 TREASURE_ENTRY_BASIC_CS = 990200;
 static constexpr uint32 TREASURE_ENTRY_RARE_CS  = 990201;
 static constexpr uint32 TREASURE_ENTRY_EPIC_CS  = 990202;
-
-// EN entries
 static constexpr uint32 TREASURE_ENTRY_BASIC_EN = 990210;
 static constexpr uint32 TREASURE_ENTRY_RARE_EN  = 990211;
 static constexpr uint32 TREASURE_ENTRY_EPIC_EN  = 990212;
-
-// Loot entry zůstává 1× na kvalitu (sdílený mezi CS/EN)
 static constexpr uint32 TREASURE_LOOT_BASIC = 990200;
 static constexpr uint32 TREASURE_LOOT_RARE  = 990201;
 static constexpr uint32 TREASURE_LOOT_EPIC  = 990202;
-
-// GO type chest
 static constexpr uint8 GO_TYPE_CHEST = 3;
-
-// LootState – používáme GO_JUST_DEACTIVATED (3)
 static constexpr uint32 GO_JUST_DEACTIVATED_STATE = 3;
-
-// Quality enum
 enum class TreasureQuality : uint8 { BASIC = 1, RARE = 2, EPIC = 3 };
 
 /* -----------------------------
@@ -98,7 +86,6 @@ static inline uint32 EntryByQualityLang(TreasureQuality q, bool cs)
     return cs ? TREASURE_ENTRY_BASIC_CS : TREASURE_ENTRY_BASIC_EN;
 }
 
-// Mapování kvality -> sdílený loot entry (společné pro CS/EN varianty truhel)
 static inline uint32 LootEntryByQuality(TreasureQuality q)
 {
     switch (q)
@@ -171,13 +158,11 @@ namespace TreasureConf
     uint32 lockId = 43;
     uint32 d3 = 1, d10 = 1, d12 = 1, d15 = 1;
 
-    // +++ nové klíče pro proximity notifikaci +++
     bool  notify_enable        = true;
     float notify_radius_basic  = 20.0f;
     float notify_radius_rare   = 20.0f;
     float notify_radius_epic   = 20.0f;
 
-    // Oddělené texty pro CS/EN a pro každou kvalitu
     std::string notify_msg_basic_cs = "|cffFFD700Cítíš, že se poblíž nachází prostá truhla s pokladem!|r";
     std::string notify_msg_rare_cs  = "|cffFFD700Cítíš, že se poblíž nachází vzácná truhla s pokladem!|r";
     std::string notify_msg_epic_cs  = "|cffFFD700Cítíš, že se poblíž nachází epická truhla s pokladem!|r";
@@ -186,10 +171,8 @@ namespace TreasureConf
     std::string notify_msg_rare_en  = "|cffFFD700You sense a rare treasure chest nearby!|r";
     std::string notify_msg_epic_en  = "|cffFFD700You sense an epic treasure chest nearby!|r";
 
-    // Seznam zakázaných účtů (jako intervaly <from,to>)
     static std::vector<std::pair<uint32, uint32>> disableAccRanges;
 
-    // Pomocná: trim mezer
     static inline void trim(std::string& s)
     {
         auto notsp = [](int ch){ return !std::isspace(ch); };
@@ -197,7 +180,6 @@ namespace TreasureConf
         while (!s.empty() && !notsp(s.back()))  s.pop_back();
     }
 
-    // Parse "1-200, 500, 700-710" => vektor intervalů
     static void ParseDisableRanges(std::string const& cfg)
     {
         disableAccRanges.clear();
@@ -236,7 +218,6 @@ namespace TreasureConf
         }
     }
 
-    // Test členské funkce: je účet v některém intervalu?
     static inline bool IsDisabledAccount(uint32 accId)
     {
         if (accId == 0) return false;
@@ -248,7 +229,6 @@ namespace TreasureConf
 
     void Load()
     {
-        // Na této větvi AC použij GetOption<T>(key, def)
         enable = sConfigMgr->GetOption<bool>("Treasure.Enable", true);
     
         std::string lang = sConfigMgr->GetOption<std::string>("Treasure.Language", "cs");
@@ -302,7 +282,6 @@ namespace TreasureConf
         notify_msg_rare_en  = sConfigMgr->GetOption<std::string>("Treasure.Notify.Msg.Rare.en",  notify_msg_rare_en);
         notify_msg_epic_en  = sConfigMgr->GetOption<std::string>("Treasure.Notify.Msg.Epic.en",  notify_msg_epic_en);
 		
-        // Načti seznam zakázaných účtů:
         std::string dis = sConfigMgr->GetOption<std::string>("Treasure.Notify.RndBots.Disable", "");
         ParseDisableRanges(dis);
     }
@@ -338,7 +317,6 @@ static void EnsureTemplatesAndLoot()
     if (!TreasureConf::enable)
         return;
 
-    // Názvy
     std::string nBasicCS = "Prostá truhla s pokladem";
     std::string nRareCS  = "Vzácná truhla s pokladem";
     std::string nEpicCS  = "Epická truhla s pokladem";
@@ -347,17 +325,14 @@ static void EnsureTemplatesAndLoot()
     std::string nRareEN  = "Rare Treasure Chest";
     std::string nEpicEN  = "Epic Treasure Chest";
 
-    // CS šablony (Data1 = sdílené loot entry)
     UpsertTemplate(TREASURE_ENTRY_BASIC_CS, nBasicCS, TreasureConf::display_basic, TREASURE_LOOT_BASIC, TreasureConf::size_basic);
     UpsertTemplate(TREASURE_ENTRY_RARE_CS,  nRareCS,  TreasureConf::display_rare,  TREASURE_LOOT_RARE,  TreasureConf::size_rare);
     UpsertTemplate(TREASURE_ENTRY_EPIC_CS,  nEpicCS,  TreasureConf::display_epic,  TREASURE_LOOT_EPIC,  TreasureConf::size_epic);
 
-    // EN šablony (stejný loot entry dle kvality)
     UpsertTemplate(TREASURE_ENTRY_BASIC_EN, nBasicEN, TreasureConf::display_basic, TREASURE_LOOT_BASIC, TreasureConf::size_basic);
     UpsertTemplate(TREASURE_ENTRY_RARE_EN,  nRareEN,  TreasureConf::display_rare,  TREASURE_LOOT_RARE,  TreasureConf::size_rare);
     UpsertTemplate(TREASURE_ENTRY_EPIC_EN,  nEpicEN,  TreasureConf::display_epic,  TREASURE_LOOT_EPIC,  TreasureConf::size_epic);
 
-    // Helper pro SQL insert jedné loot tabulky – bez % formátování
     auto makeLootInsert = [](uint32 lootEntry, uint32 itemId, double chance, uint32 minCount, uint32 maxCount, char const* comment)
     {
         std::ostringstream ss;
@@ -406,19 +381,16 @@ static uint32 GetAccountIdSafe(Player* plr)
 {
     if (!plr) return 0;
 
-    // 1) on-line hráč (má session)
     if (WorldSession* sess = plr->GetSession())
         return sess->GetAccountId();
 
-    // 2) Playerbots / bez session -> dotaz do characters DB (cache podle GUID low)
-    static std::unordered_map<uint32, uint32> cache; // guidLow -> account
+    static std::unordered_map<uint32, uint32> cache;
     uint32 low = plr->GetGUID().GetCounter();
 
     auto it = cache.find(low);
     if (it != cache.end())
         return it->second;
 
-    // Pozn.: bez %u v PQuery – použijeme stringstream
     std::ostringstream q;
     q << "SELECT `account` FROM `characters` WHERE `guid`=" << low << " LIMIT 1;";
     if (QueryResult qr = CharacterDatabase.Query(q.str().c_str()))
@@ -481,7 +453,7 @@ public:
         if (!ours)
             return;
     
-        uint32 const delay = go->GetRespawnDelay(); // vychází z gameobject.spawntimesecs (spawn/template)
+        uint32 const delay = go->GetRespawnDelay();
         if (delay == 0)
             return;
     
@@ -489,7 +461,7 @@ public:
         if (Map* map = go->GetMap())
         {
             time_t when_t = static_cast<time_t>(when);
-            map->SaveGORespawnTime(go->GetSpawnId(), when_t); // zapíše do gameobject_respawn
+            map->SaveGORespawnTime(go->GetSpawnId(), when_t);
         }
     }
 };
@@ -510,7 +482,6 @@ namespace {
 		bool   inited = false;
 	};
 
-    // per-player stav (lowguid -> TrackState)
     std::unordered_map<uint32, TrackState> g_tracks;
 
     inline bool NearEntrySpawned(Player* p, uint32 entry, float radius)
@@ -521,16 +492,12 @@ namespace {
 		if (!go)
 			return false;
 	
-		// Musí to být naše truhla a musí být reálně spawnutá (ne v respawnu)
 		if (go->GetGoType() != GO_TYPE_CHEST)
 			return false;
 	
-		// Pokud má nenulový respawn time, čeká na respawn => nehlásit
-		// (v AC je 0 == právě spawnuté)
 		if (go->GetRespawnTime() != 0)
 			return false;
 	
-		// Pro jistotu jen když je READY (otevřitelná)
 		if (go->GetGoState() != GO_STATE_READY)
 			return false;
 	
@@ -555,7 +522,6 @@ namespace {
 			   NearEntrySpawned(p, TREASURE_ENTRY_EPIC_EN, TreasureConf::notify_radius_epic);
 	}
 	
-	// Per-quality texty (respektují lang switcher)
 	inline char const* MsgBasic()
 	{
 		return TreasureConf::langCs ? TreasureConf::notify_msg_basic_cs.c_str()
@@ -578,13 +544,11 @@ class TreasureProximityPlayerScript : public PlayerScript
 public:
     TreasureProximityPlayerScript() : PlayerScript("TreasureProximityPlayerScript") {}
 
-    // „Movement-driven“ – kontrola proběhne jen pokud se hráč relevantně posunul (delta > 0.5y) nebo změnil mapu.
     void OnPlayerUpdate(Player* player, uint32 /*diff*/) override
     {
         if (!player || !TreasureConf::enable || !TreasureConf::notify_enable)
             return;
 
-        // EARLY-OUT: ignorované účty (funguje i pro playerboty bez session)
         uint32 accId = GetAccountIdSafe(player);
         if (TreasureConf::IsDisabledAccount(accId))
             return;
@@ -597,7 +561,6 @@ public:
         float y = player->GetPositionY();
         float z = player->GetPositionZ();
 
-		// První init – uložíme stav pro každou kvalitu zvlášť, nic nehlásíme
 		if (!st.inited)
 		{
 			st.inited = true;
@@ -610,24 +573,20 @@ public:
 			return;
 		}
 
-        // Když se nezměnila mapa a posun je zanedbatelný, nic nepočítáme
         bool mapChanged = (mapId != st.lastMap);
         float dx = x - st.lastX, dy = y - st.lastY, dz = z - st.lastZ;
         float dist2 = dx*dx + dy*dy + dz*dz;
 
-        if (!mapChanged && dist2 < 0.25f) // ~0.5 yardu
+        if (!mapChanged && dist2 < 0.25f)
             return;
 
-        // Uložit nové "last"
         st.lastMap = mapId;
         st.lastX = x; st.lastY = y; st.lastZ = z;
 
-		// Vyhodnocení hran pro každou kvalitu zvlášť
 		bool nowBasic = NearAnyBasic(player);
 		bool nowRare  = NearAnyRare(player);
 		bool nowEpic  = NearAnyEpic(player);
 		
-		// Posíláme všechny hrany ven->dovnitř, které nastaly v tomto kroku
 		if (WorldSession* sess = player->GetSession())
 		{
 			if (!st.wasEpic && nowEpic)
@@ -637,9 +596,7 @@ public:
 			if (!st.wasBasic && nowBasic)
 				ChatHandler(sess).SendSysMessage(MsgBasic());
 		}
-		// (bot bez session: nic neposíláme)
 		
-		// Aktualizace stavů
 		st.wasBasic = nowBasic;
 		st.wasRare  = nowRare;
 		st.wasEpic  = nowEpic;
@@ -679,7 +636,6 @@ public:
         static ChatCommandTable treasureSub;
         if (treasureSub.empty())
         {
-            // pořadí: name, handler, security, console
             treasureSub.emplace_back(ChatCommandBuilder("add",     Treasure_HandleAdd,     SEC_GAMEMASTER, Console::No));
             treasureSub.emplace_back(ChatCommandBuilder("list",    Treasure_HandleList,    SEC_GAMEMASTER, Console::No));
             treasureSub.emplace_back(ChatCommandBuilder("remove",  Treasure_HandleRemove,  SEC_GAMEMASTER, Console::No));
@@ -696,7 +652,6 @@ public:
     }
 };
 
-// .treasure add basic/rare/epic
 static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
 {
     if (!TreasureConf::enable)
@@ -728,7 +683,6 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
         case TreasureQuality::EPIC:  respawn = TreasureConf::respawn_epic;  break;
     }
 
-    // Insert do gameobject (DB persistent)
     uint32 map  = plr->GetMapId();
     uint32 zone = plr->GetZoneId();
     uint32 area = plr->GetAreaId();
@@ -737,14 +691,12 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
     float z = plr->GetPositionZ();
     float o = plr->GetOrientation();
 
-    // --- 1) Unikátní marker pro tenhle spawn (do sloupce Comment) ---
     uint32 pGuidLow = plr->GetGUID().GetCounter();
     uint32 now      = uint32(::time(nullptr));
     std::ostringstream mss;
     mss << "treasure-auto-" << pGuidLow << "-" << now;
     std::string marker = mss.str();
 
-    // --- 2) INSERT s markerem v Comment ---
     {
         std::ostringstream iq;
         iq << "INSERT INTO `gameobject` "
@@ -764,7 +716,6 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
         WorldDatabase.Execute(iq.str().c_str());
     }
 
-    // --- 3) Spolehlivě načti GUID podle markeru ---
     uint32 guid = 0;
     {
         std::ostringstream sq;
@@ -775,14 +726,12 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
             guid = (*gqr)[0].Get<uint32>();
     }
 
-    // Nouzová pojistka (nemělo by být třeba)
     if (!guid)
     {
         if (QueryResult gqr2 = WorldDatabase.Query("SELECT `guid` FROM `gameobject` ORDER BY `guid` DESC LIMIT 1;"))
             guid = (*gqr2)[0].Get<uint32>();
     }
 
-    // --- 4) (volitelně) přepiš Comment na „hezký“ text ---
     {
         std::ostringstream uq;
         uq << "UPDATE `gameobject` SET `Comment`='"
@@ -791,7 +740,6 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
         WorldDatabase.Execute(uq.str().c_str());
     }
 
-    // Zapiš do customs.treasure_chest (už s korektním GUID)
     {
         std::ostringstream cq;
         cq << "INSERT INTO `customs`.`treasure_chest` "
@@ -805,7 +753,6 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
         WorldDatabase.Execute(cq.str().c_str());
     }
 
-    // Runtime spawn bez restartu
     Map* mapPtr = plr->GetMap();
     if (mapPtr && guid != 0)
     {
@@ -864,7 +811,6 @@ static bool Treasure_HandleAdd(ChatHandler* handler, char const* args)
     return true;
 }
 
-// .treasure list basic/rare/epic
 static bool Treasure_HandleList(ChatHandler* handler, char const* args)
 {
     std::string a = args ? std::string(args) : "";
@@ -912,7 +858,6 @@ static bool Treasure_HandleList(ChatHandler* handler, char const* args)
     return true;
 }
 
-// .treasure remove ID
 static bool Treasure_HandleRemove(ChatHandler* handler, char const* args)
 {
     std::string s = args ? std::string(args) : "";
@@ -925,7 +870,6 @@ static bool Treasure_HandleRemove(ChatHandler* handler, char const* args)
 
     uint32 id = uint32(std::strtoul(s.c_str(), nullptr, 10));
 
-    // SELECT guid
     std::string sel = "SELECT guid FROM customs.treasure_chest WHERE id=" + std::to_string(id) + ";";
     QueryResult qr = WorldDatabase.Query(sel.c_str());
 
@@ -939,7 +883,6 @@ static bool Treasure_HandleRemove(ChatHandler* handler, char const* args)
         return true;
     }
 
-    // DELETEs
     std::string delGo   = "DELETE FROM gameobject WHERE guid=" + std::to_string(guid) + ";";
     std::string delCust = "DELETE FROM customs.treasure_chest WHERE id=" + std::to_string(id) + ";";
     WorldDatabase.Execute(delGo.c_str());
@@ -954,7 +897,6 @@ static bool Treasure_HandleRemove(ChatHandler* handler, char const* args)
     return true;
 }
 
-// .treasure additem <itemId> <min-max/count> <chance> <basic/rare/epic>
 static bool Treasure_HandleAddItem(ChatHandler* handler, char const* args)
 {
     std::string a = args ? std::string(args) : "";
@@ -971,10 +913,8 @@ static bool Treasure_HandleAddItem(ChatHandler* handler, char const* args)
         return true;
     }
 
-    // itemId
     uint32 itemId = uint32(std::strtoul(si.c_str(), nullptr, 10));
 
-    // parse range "min-max" nebo "n"
     uint32 minCount = 1, maxCount = 1;
     {
         size_t dash = srange.find('-');
@@ -997,7 +937,6 @@ static bool Treasure_HandleAddItem(ChatHandler* handler, char const* args)
         }
     }
 
-    // chance (povolit čárku)
     for (char& ch : schance) if (ch == ',') ch = '.';
     char* endPtr = nullptr;
     double chanceD = std::strtod(schance.c_str(), &endPtr);
@@ -1019,7 +958,6 @@ static bool Treasure_HandleAddItem(ChatHandler* handler, char const* args)
     }
     float chance = float(chanceD);
 
-    // kvalita
     TreasureQuality q;
     if (!ParseQuality(sq, q))
     {
@@ -1032,7 +970,6 @@ static bool Treasure_HandleAddItem(ChatHandler* handler, char const* args)
 
     uint32 lootEntry = LootEntryByQuality(q);
 
-    // UPSERT záznamu do gameobject_loot_template s naším min/max
     std::ostringstream iq;
     iq << "INSERT INTO `gameobject_loot_template` "
     << "(`Entry`,`Item`,`Reference`,`Chance`,`QuestRequired`,`LootMode`,`GroupId`,`MinCount`,`MaxCount`,`Comment`) VALUES ("
@@ -1063,7 +1000,6 @@ static bool Treasure_HandleAddItem(ChatHandler* handler, char const* args)
     return true;
 }
 
-// .treasure tp ID
 static bool Treasure_HandleTp(ChatHandler* handler, char const* args)
 {
     std::string s = args ? std::string(args) : "";
