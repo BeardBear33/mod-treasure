@@ -1,7 +1,5 @@
 # Treasure
 
-**Treasure**
-
 AzerothCore modul, který přidává tři typy truhel s možností plně upravitelného lootu a pohodlné správy pomocí příkazů. Stačí je rozmístit do světa a nechat hráče vydat se na lov pokladů.
 
 An AzerothCore module that introduces three types of treasure chests with fully customizable loot and convenient management through ingame commands. Simply place the chests in the world and let your players begin their treasure hunt.
