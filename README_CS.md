@@ -9,13 +9,16 @@ Tento modul umožňuje:
 - Přidávat vlastní itemy do obsahu truhel s šancí a rozsahem množství (`min-max`)  
 - Spravovat truhly příkazy přímo ve hře  
 
-### Požadavky  
-Před použitím je nutné zajistit, aby uživatel databáze z `WorldDatabaseInfo` (standardně `acore`) měl práva i na novou databázi `customs`:  
+### Instalace / Požadavky  
+Modul obsahuje autoupdater tudíž není potřeba ručně importovat .sql  
+Pro správnou funkčnost autoupdateru je nutné zajistit, aby uživatel databáze z `(WorldDatabaseInfo) – "127.0.0.1;3306;acore;acore;acore_world"`  
+měl práva i na novou databázi customs:
 
-```sql
-GRANT ALL PRIVILEGES ON customs.* TO 'acore'@'localhost';
-FLUSH PRIVILEGES;
 ```
+GRANT CREATE ON *.* TO 'acore'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON customs.* TO 'acore'@'127.0.0.1';
+FLUSH PRIVILEGES;
+```  
 
 ### ⚠️ Upozornění
 Modul používá vlastní **entry** a **loot entry** v tabulkách `gameobject_template` a `gameobject_loot_template`.  
@@ -39,17 +42,9 @@ Je nutné zajistit, že tato ID nejsou v `acore_world` již obsazená jiným obs
 Pokud máš v databázi již jiné záznamy s těmito ID, je potřeba čísla v modulu i v SQL posunout na jiný volný rozsah.
 
 **Poznámky:**
-- Modul při startu **automaticky založí chybějící záznamy** v `gameobject_loot_template` (placeholder nebo podle `Treasure.DefaultItem.*` v `.conf`).  
-  Existující loot **nepřepisuje** (používá vkládání typu *INSERT IGNORE*).  
-  Samostatný SQL seed pro loot **není nutný**; pokud ho přesto přidáš, dělej to **idempotentně** (bez `DELETE`, s `INSERT IGNORE` / `ON DUPLICATE KEY UPDATE`).
-
 - Po **prvním přidání truhel** je nutné provést **restart serveru**, aby se zobrazily ve světě. Následná přidávání už se projeví okamžitě.
 
 - Po **přidání nebo úpravě lootu** v bedně je také potřeba **restart serveru**, aby se nový obsah začal objevovat.
-
-- Volitelné SQL `sql/optional/world/base/sack_loot_edit.sql` **upravuje loot původních itemů**  
-  **Small Sack of Coins (11966)** a **Fat Sack of Coins (11937)** tak, aby přestaly padat z klasických truhel  
-  a byly exkluzivním obsahem truhel vytvořených tímto modulem.
 
 ### Příkazy
 .treasure add basic
@@ -80,8 +75,5 @@ Příklad (pevný počet): .treasure additem 18 3 100 epic
 .treasure tp <ID>
 ➝ Teleportuje hráče k truhle podle ID z customs
 Příklad: .treasure tp 7
-
-## License
-This module is licensed under the [GNU General Public License v3.0 (GPL-3.0)](LICENSE).
 
 

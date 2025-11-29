@@ -3,6 +3,7 @@ project(mod-treasure)
 
 set(scripts_STAT_SRCS
   src/mod_treasure.cpp
+  src/autoupdate.cpp
 )
 
 AC_ADD_SCRIPT("${scripts_STAT_SRCS}")

@@ -1038,10 +1038,13 @@ static bool Treasure_HandleTp(ChatHandler* handler, char const* args)
 /* ============================
  * registrace
  * ============================ */
+void RegisterTreasureCustomsUpdater();
 
 void Addmod_treasureScripts()
 {
-    new TreasureWorldScript();
+    RegisterTreasureCustomsUpdater();
+	
+	new TreasureWorldScript();
     new TreasureChestPersistGO();
     new TreasureCommands();
     new TreasureProximityPlayerScript(); // +++ registrace proximity skriptu +++
