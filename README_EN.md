@@ -20,6 +20,12 @@ GRANT ALL PRIVILEGES ON customs.* TO 'acore'@'127.0.0.1';
 FLUSH PRIVILEGES;
 ```  
 
+**Optional:**
+- Add this line to worldserver.conf:  
+  Logger.gv.customs=3,Console Server
+
+##
+
 ### ⚠️ Warning – Reserved IDs
 The module uses custom **entry** and **loot entry** in the `gameobject_template` and `gameobject_loot_template` tables.  
 Make sure these IDs are not already used by other content in `acore_world`:
